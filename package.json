@@ -1,0 +1,37 @@
+{
+  "name": "crm-taller-mecanico",
+  "version": "1.0.0",
+  "description": "Sistema de Gestión y Seguimiento para Taller Mecánico con Portal Público QR",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspaces",
+    "prisma:generate": "npm run prisma:generate --workspace=backend",
+    "prisma:migrate": "npm run prisma:migrate --workspace=backend",
+    "prisma:seed": "npm run prisma:seed --workspace=backend"
+  },
+  "keywords": [
+    "crm",
+    "taller",
+    "mecanico",
+    "monorepo",
+    "nextjs",
+    "prisma",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@neon/config": "^1.7.2",
+    "@neon/env": "^1.4.3"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}

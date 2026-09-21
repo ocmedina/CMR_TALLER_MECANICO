@@ -1,0 +1,139 @@
+// Prisma Schema for CRM Taller Mecanico
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  MECHANIC
+}
+
+enum OrderStatus {
+  PENDING         // Ingresado / Pendiente de revisión
+  IN_PROGRESS     // En reparación
+  WAITING_PARTS   // Esperando repuestos
+  READY           // Listo para entrega
+  DELIVERED       // Entregado al cliente
+}
+
+enum ItemType {
+  PART            // Repuesto
+  LABOR           // Mano de obra
+}
+
+enum MediaType {
+  INITIAL_STATE   // Estado inicial del vehículo al ingresar
+  DISASSEMBLY     // Desarme / daño visible
+  NEW_PART        // Pieza nueva instalada
+  FINAL_RESULT    // Resultado final
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(MECHANIC)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workOrders WorkOrder[]
+
+  @@map("users")
+}
+
+model Client {
+  id         String    @id @default(uuid())
+  name       String
+  phone      String
+  email      String?
+  documentId String?   @unique // DNI, CUIT, RUT
+  address    String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  vehicles   Vehicle[]
+
+  @@map("clients")
+}
+
+model Vehicle {
+  id        String   @id @default(uuid())
+  plate     String   @unique // Patente o placa (ej: AB123CD)
+  brand     String   // Marca (ej: Toyota)
+  model     String   // Modelo (ej: Corolla)
+  year      Int?     // Año (ej: 2021)
+  color     String?
+  qrToken   String   @unique @default(uuid()) // Token público para QR
+
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  workOrders WorkOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("vehicles")
+}
+
+model WorkOrder {
+  id          String      @id @default(uuid())
+  orderNumber Int         @unique @default(autoincrement())
+  status      OrderStatus @default(PENDING)
+  currentKm   Int
+  description String      // Fallas reportadas / motivo de ingreso
+  notes       String?     // Notas internas de mecánicos
+
+  vehicleId   String
+  vehicle     Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  mechanicId  String?
+  mechanic    User?       @relation(fields: [mechanicId], references: [id])
+
+  items       WorkOrderItem[]
+  media       WorkOrderMedia[]
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("work_orders")
+}
+
+model WorkOrderItem {
+  id          String    @id @default(uuid())
+  type        ItemType  @default(PART)
+  description String
+  quantity    Int       @default(1)
+  unitPrice   Float     @default(0.0)
+  subtotal    Float     @default(0.0)
+
+  workOrderId String
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+
+  @@map("work_order_items")
+}
+
+model WorkOrderMedia {
+  id          String    @id @default(uuid())
+  url         String
+  publicId    String?
+  type        MediaType @default(DISASSEMBLY)
+  caption     String?
+
+  workOrderId String
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+
+  @@map("work_order_media")
+}
