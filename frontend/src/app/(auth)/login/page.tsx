@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Wrench, Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
+import { Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 import { authService } from '../../../services/auth.service';
 
 export default function LoginPage() {
@@ -28,12 +28,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-tr from-slate-950 via-slate-900 to-indigo-950">
-      <div className="w-full max-w-md bg-slate-900/80 border border-slate-800 backdrop-blur-xl p-8 rounded-2xl shadow-2xl shadow-black/50">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#08111f]">
+      <div className="w-full max-w-md surface p-8 rounded-3xl">
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/30 mb-4">
-            <Wrench className="w-7 h-7 text-white" />
-          </div>
+          <img src="/Logo.png" alt="TallerPro Control Operativo" className="mb-5 h-auto w-64 object-contain" />
           <h1 className="text-2xl font-black tracking-tight text-white">Acceso al Panel del Taller</h1>
           <p className="text-sm text-slate-400 mt-1">Ingresa con tus credenciales de administrador o mecánico</p>
         </div>
@@ -80,7 +78,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+              className="primary-button w-full py-3"
             >
               {loading ? 'Verificando...' : 'Iniciar Sesión'}
               {!loading && <ArrowRight className="w-4 h-4" />}

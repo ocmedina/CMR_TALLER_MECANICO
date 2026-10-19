@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Users, Search, Plus, Phone, Mail, Car, QrCode } from 'lucide-react';
+import { Users, Search, Plus, Phone, Mail, Car, QrCode, X } from 'lucide-react';
 import { clientsService } from '../../../services/clients.service';
 import { Client } from '../../../types';
 
@@ -80,7 +80,7 @@ export default function ClientesPage() {
 
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
+          className="primary-button cursor-pointer"
         >
           <Plus className="w-4 h-4" /> Nuevo Cliente
         </button>
@@ -95,7 +95,7 @@ export default function ClientesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre, teléfono o DNI..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+            className="w-full pl-10 pr-4 py-2 bg-slate-900/80 border border-white/[0.1] rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400"
           />
         </div>
         <button
@@ -157,7 +157,7 @@ export default function ClientesPage() {
                           <span className="font-medium text-white">
                             {v.brand} {v.model}
                           </span>
-                          <span className="ml-2 font-mono text-indigo-400 font-semibold text-[11px]">
+                          <span className="ml-2 font-mono text-amber-300 font-semibold text-[11px]">
                             {v.plate}
                           </span>
                         </div>
@@ -191,7 +191,7 @@ export default function ClientesPage() {
                 onClick={() => setShowModal(false)}
                 className="text-slate-400 hover:text-white"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 

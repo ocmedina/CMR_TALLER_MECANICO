@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Iniciando la siembra de datos de prueba...');
+  console.log('Iniciando la siembra de datos de prueba...');
 
   // 1. Limpiar datos existentes
   await prisma.workOrderMedia.deleteMany();
@@ -35,7 +35,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Usuarios creados: admin@taller.com / mecanico@taller.com (clave: password123)');
+  console.log('Usuarios creados: admin@taller.com / mecanico@taller.com (clave: password123)');
 
   // 3. Crear Clientes
   const client1 = await prisma.client.create({
@@ -141,7 +141,7 @@ async function main() {
     ],
   });
 
-  console.log('✅ Base de datos sembrada con éxito con datos de prueba realistas.');
+  console.log('Base de datos sembrada con éxito con datos de prueba realistas.');
 }
 
 main()

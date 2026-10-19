@@ -44,7 +44,7 @@ export default function PortalClientePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400">
+      <div className="min-h-screen flex items-center justify-center bg-[#08111f] text-slate-400">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
           <p className="text-sm">Cargando ficha de seguimiento...</p>
@@ -55,8 +55,8 @@ export default function PortalClientePage() {
 
   if (error || !vehicle) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950 text-slate-100">
-        <div className="max-w-md w-full p-8 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-4">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-[#08111f] text-slate-100">
+        <div className="surface max-w-md w-full p-8 rounded-3xl text-center space-y-4">
           <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
             <AlertCircle className="w-6 h-6" />
           </div>
@@ -85,18 +85,12 @@ export default function PortalClientePage() {
   const currentStepIdx = latestOrder ? getStepIndex(latestOrder.status) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 pb-16">
+    <div className="min-h-screen bg-[#08111f] text-slate-100 pb-16">
       {/* Header Público */}
-      <header className="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md px-6 py-4 sticky top-0 z-40">
+      <header className="border-b border-white/[0.08] bg-[#08111f]/80 backdrop-blur-md px-6 py-4 sticky top-0 z-40">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="bg-indigo-600 p-2 rounded-xl text-white">
-              <Wrench className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-bold text-base text-white">Portal de Seguimiento</span>
-              <span className="block text-[11px] text-slate-400">Taller Mecánico Oficial</span>
-            </div>
+            <img src="/Logo.png" alt="TallerPro Control Operativo" className="h-auto w-44 object-contain" />
           </div>
 
           <div className="flex items-center gap-2">
@@ -110,13 +104,13 @@ export default function PortalClientePage() {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 space-y-6">
         {/* Banner Auto */}
-        <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="surface p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
                 {vehicle.brand} {vehicle.model}
               </h1>
-              <span className="px-3 py-1 rounded-lg bg-indigo-500/20 text-indigo-400 font-mono font-bold text-sm border border-indigo-500/30">
+              <span className="px-3 py-1 rounded-lg bg-amber-400/10 text-amber-300 font-mono font-bold text-sm border border-amber-400/20">
                 {vehicle.plate}
               </span>
             </div>
@@ -139,7 +133,7 @@ export default function PortalClientePage() {
 
         {/* Estado Operativo Actual (Stepper) */}
         {latestOrder ? (
-          <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-6">
+          <div className="surface p-6 rounded-2xl space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-white">Estado de la Reparación</h3>

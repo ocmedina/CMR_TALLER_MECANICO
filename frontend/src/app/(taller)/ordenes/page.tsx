@@ -75,7 +75,7 @@ export default function OrdenesPage() {
               onClick={() => setViewMode('kanban')}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                 viewMode === 'kanban'
-                  ? 'bg-indigo-600 text-white shadow'
+                  ?                   'bg-amber-400 text-slate-950 shadow'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -95,7 +95,7 @@ export default function OrdenesPage() {
 
           <Link
             href="/escanear"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/20"
+            className="primary-button"
           >
             <Plus className="w-4 h-4" /> Nueva Orden
           </Link>
@@ -139,7 +139,7 @@ export default function OrdenesPage() {
                         className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/90 hover:border-indigo-500/50 transition-all shadow-md group"
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-mono font-bold text-indigo-400">
+                          <span className="text-xs font-mono font-bold text-amber-300">
                             #{order.orderNumber}
                           </span>
                           <span className="text-[10px] text-slate-400 font-mono bg-slate-800/80 px-2 py-0.5 rounded">
@@ -162,7 +162,7 @@ export default function OrdenesPage() {
 
                           <Link
                             href={`/ordenes/${order.id}`}
-                            className="text-xs font-semibold text-indigo-400 group-hover:text-indigo-300 flex items-center gap-1"
+                            className="text-xs font-semibold text-amber-300 group-hover:text-amber-200 flex items-center gap-1"
                           >
                             Detalle <ArrowRight className="w-3 h-3" />
                           </Link>

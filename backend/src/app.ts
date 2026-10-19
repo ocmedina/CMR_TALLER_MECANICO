@@ -8,6 +8,7 @@ import clientsRoutes from './modules/clients/clients.routes';
 import vehiclesRoutes from './modules/vehicles/vehicles.routes';
 import workOrdersRoutes from './modules/work-orders/work-orders.routes';
 import mediaRoutes from './modules/media/media.routes';
+import appointmentsRoutes from './modules/appointments/appointments.routes';
 
 export const createApp = (): Express => {
   const app = express();
@@ -38,6 +39,7 @@ export const createApp = (): Express => {
   app.use('/api/vehicles', vehiclesRoutes);
   app.use('/api/work-orders', workOrdersRoutes);
   app.use('/api/media', mediaRoutes);
+  app.use('/api/appointments', appointmentsRoutes);
 
   // Manejador global de errores
   app.use(errorHandler);

@@ -10,6 +10,7 @@ export type OrderStatus =
 export type ItemType = 'PART' | 'LABOR';
 
 export type MediaType = 'INITIAL_STATE' | 'DISASSEMBLY' | 'NEW_PART' | 'FINAL_RESULT';
+export type AppointmentStatus = 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
 
 export interface User {
   id: string;
@@ -72,6 +73,21 @@ export interface WorkOrder {
   mechanic?: User;
   items: WorkOrderItem[];
   media: WorkOrderMedia[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Appointment {
+  id: string;
+  scheduledAt: string;
+  durationMinutes: number;
+  status: AppointmentStatus;
+  reason: string;
+  notes?: string;
+  clientId: string;
+  client: Client;
+  vehicleId: string;
+  vehicle: Vehicle;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
+import path from 'path';
 import { z } from 'zod';
 
+// Cargar .env desde la carpeta backend o la raíz según corresponda
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 
 const envSchema = z.object({
@@ -18,7 +21,7 @@ const envSchema = z.object({
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
-  console.error('❌ Error de validación en variables de entorno:', parsedEnv.error.format());
+  console.error('Error de validación en variables de entorno:', parsedEnv.error.format());
   process.exit(1);
 }
 

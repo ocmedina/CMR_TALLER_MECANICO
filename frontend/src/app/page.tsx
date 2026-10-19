@@ -16,25 +16,17 @@ export default function HomePage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+    <div className="min-h-screen flex flex-col justify-between bg-[#08111f] text-slate-100">
       {/* Header */}
-      <header className="border-b border-slate-800/80 px-6 py-4 flex items-center justify-between backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-white/[0.08] px-6 py-4 flex items-center justify-between bg-[#08111f]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <div className="bg-indigo-600 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
-            <Wrench className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-              TallerPro CRM
-            </span>
-            <span className="block text-xs text-slate-400 font-medium">Gestión Inteligente & Portal QR</span>
-          </div>
+          <img src="/Logo.png" alt="TallerPro Control Operativo" className="h-auto w-48 object-contain" />
         </div>
 
         <div className="flex items-center gap-3">
           <Link
             href="/login"
-            className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-medium text-sm text-white transition-all shadow-md shadow-indigo-600/20"
+            className="primary-button px-4 py-2"
           >
             Acceso Personal
           </Link>
@@ -43,13 +35,13 @@ export default function HomePage() {
 
       {/* Hero */}
       <main className="max-w-5xl mx-auto px-6 py-16 text-center flex-1 flex flex-col justify-center items-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-6">
           <ShieldCheck className="w-4 h-4" /> Plataforma Operativa & Transparencia Total
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-3xl leading-tight">
           Control Total del Taller y{' '}
-          <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+          <span className="text-amber-300">
             Seguimiento en Vivo por QR
           </span>
         </h1>
@@ -61,14 +53,14 @@ export default function HomePage() {
         <div className="mt-10 flex flex-wrap gap-4 justify-center">
           <Link
             href="/login"
-            className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all shadow-lg shadow-indigo-600/30"
+            className="primary-button px-6 py-3.5"
           >
             Ingresar al Panel de Taller <ArrowRight className="w-4 h-4" />
           </Link>
 
           <Link
             href="/portal/demo-token-toyota-corolla"
-            className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold transition-all"
+            className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.09] text-slate-200 border border-white/[0.1] font-semibold transition-all"
           >
             <QrCode className="w-4 h-4 text-indigo-400" /> Ver Demo Portal Cliente (QR)
           </Link>
@@ -76,9 +68,9 @@ export default function HomePage() {
 
         {/* Feature Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full text-left">
-          <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800">
+          <div className="surface p-6 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4">
-              <QrCode className="w-5 h-5" />
+              <QrCode className="w-5 h-5 text-amber-300" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">Recepción Express</h3>
             <p className="text-sm text-slate-400">
@@ -86,7 +78,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800">
+          <div className="surface p-6 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-4">
               <Wrench className="w-5 h-5" />
             </div>
@@ -96,7 +88,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800">
+          <div className="surface p-6 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4">
               <ShieldCheck className="w-5 h-5" />
             </div>

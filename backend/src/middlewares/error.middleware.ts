@@ -7,7 +7,7 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ): void => {
-  console.error('🔥 Error capturado en middleware global:', err);
+  console.error('Error capturado en middleware global:', err);
 
   if (err instanceof ZodError) {
     res.status(400).json({

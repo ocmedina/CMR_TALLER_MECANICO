@@ -3,25 +3,37 @@
 @tailwind utilities;
 
 :root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
+  --background: #08111f;
+  --foreground: #f4f7fb;
+  --surface: #101d2e;
+  --surface-muted: #0c1726;
+  --line: rgba(148, 163, 184, 0.14);
+  --accent: #f59e0b;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background:
+    radial-gradient(circle at 90% -10%, rgba(245, 158, 11, 0.1), transparent 30rem),
+    radial-gradient(circle at 0% 20%, rgba(14, 165, 233, 0.08), transparent 28rem),
+    var(--background);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   min-height: 100vh;
 }
 
+::selection {
+  color: #08111f;
+  background: #fbbf24;
+}
+
 /* Scrollbar personalizada */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: #0b1625;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -32,3 +44,111 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+
+@layer components {
+  .command-hero {
+    @apply relative min-h-[290px] overflow-hidden rounded-3xl border border-white/[0.09] bg-[linear-gradient(115deg,#10243a_0%,#0d1b2d_55%,#182233_100%)] p-7 shadow-2xl shadow-black/20 sm:p-10;
+  }
+
+  .command-hero:after {
+    content: '';
+    @apply absolute inset-0 opacity-50;
+    background-image: linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 38px 38px;
+    mask-image: linear-gradient(to right, black, transparent 75%);
+  }
+
+  .command-orbit { @apply absolute -right-8 -top-16 hidden h-[390px] w-[390px] lg:block; }
+  .orbit-ring { @apply absolute rounded-full border border-amber-300/10; }
+  .orbit-ring-one { @apply inset-10; transform: rotate(30deg) skewX(-18deg); }
+  .orbit-ring-two { @apply inset-20 border-cyan-300/10; transform: rotate(-25deg) skewX(15deg); }
+  .orbit-core { @apply absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[2rem] border border-amber-300/30 bg-amber-400/10 shadow-2xl shadow-amber-500/10; }
+  .secondary-button { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.06] px-4 py-2.5 text-sm font-bold text-slate-200 transition-all hover:bg-white/[0.1]; }
+  .metric-card { @apply rounded-2xl border border-white/[0.08] bg-slate-900/60 p-4 shadow-xl shadow-black/5; }
+  .metric-icon { @apply flex h-9 w-9 items-center justify-center rounded-xl; }
+  .metric-icon svg { @apply h-4 w-4; }
+  .metric-icon.blue { @apply bg-cyan-400/10 text-cyan-300; }
+  .metric-icon.violet { @apply bg-violet-400/10 text-violet-300; }
+  .metric-icon.green { @apply bg-emerald-400/10 text-emerald-300; }
+  .metric-icon.amber { @apply bg-amber-400/10 text-amber-300; }
+  .activity-row { @apply flex items-center gap-3 px-5 py-4 transition-colors hover:bg-white/[0.035]; }
+  .order-index { @apply w-14 shrink-0 font-mono text-xs font-bold text-amber-300; }
+  .status-pill { @apply inline-flex rounded-full border px-2 py-1 text-[10px] font-bold; }
+  .icon-link { @apply flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] text-slate-400 hover:border-amber-300/30 hover:text-amber-300; }
+  .empty-state { @apply px-5 py-16 text-center text-sm text-slate-500; }
+  .form-input { @apply w-full rounded-xl border border-white/[0.1] bg-slate-950/70 px-3 py-2.5 text-sm text-white outline-none transition-colors focus:border-amber-400; }
+
+  .surface {
+    @apply border border-white/[0.08] bg-slate-900/70 shadow-2xl shadow-black/10 backdrop-blur-xl;
+  }
+
+  .eyebrow {
+    @apply text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400;
+  }
+
+  .primary-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition-all hover:bg-amber-300 hover:shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}
+
+/* Light theme compatibility for existing Tailwind utility surfaces. */
+html.light {
+  color-scheme: light;
+  --background: #f4f7fb;
+  --foreground: #172033;
+  --surface: #ffffff;
+  --surface-muted: #edf2f7;
+  --line: rgba(15, 23, 42, 0.1);
+}
+
+html.light body {
+  color: var(--foreground);
+  background:
+    radial-gradient(circle at 90% -10%, rgba(245, 158, 11, 0.13), transparent 30rem),
+    radial-gradient(circle at 0% 20%, rgba(14, 165, 233, 0.1), transparent 28rem),
+    var(--background);
+}
+
+html.light ::-webkit-scrollbar-track { background: #e7edf4; }
+html.light ::-webkit-scrollbar-thumb { background: #b8c4d2; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+html.light .bg-\[\#08111f\] { background-color: #f4f7fb; }
+html.light .bg-\[\#0b1727\]\/90 { background-color: rgba(255, 255, 255, 0.9); }
+html.light .bg-slate-950 { background-color: #f8fafc; }
+html.light .bg-slate-950\/80 { background-color: rgba(248, 250, 252, 0.86); }
+html.light .bg-slate-900 { background-color: #ffffff; }
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/80 { background-color: rgba(255, 255, 255, 0.82); }
+html.light .bg-slate-800,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/80 { background-color: #edf2f7; }
+html.light .bg-white\/\[0\.04\] { background-color: rgba(15, 23, 42, 0.04); }
+html.light .bg-white\/\[0\.05\],
+html.light .bg-white\/\[0\.06\] { background-color: rgba(15, 23, 42, 0.05); }
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-white\/\[0\.06\],
+html.light .border-white\/\[0\.07\],
+html.light .border-white\/\[0\.08\],
+html.light .border-white\/\[0\.09\],
+html.light .border-white\/\[0\.1\],
+html.light .border-white\/\[0\.12\] { border-color: rgba(15, 23, 42, 0.1); }
+html.light .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(15, 23, 42, 0.08); }
+html.light .text-white { color: #172033; }
+html.light .text-slate-100,
+html.light .text-slate-200 { color: #293548; }
+html.light .text-slate-300 { color: #475569; }
+html.light .text-slate-400 { color: #64748b; }
+html.light .text-slate-500 { color: #718096; }
+html.light .text-slate-600 { color: #94a3b8; }
+html.light .hover\:bg-slate-800:hover { background-color: #e2e8f0; }
+html.light .hover\:bg-white\/\[0\.06\]:hover,
+html.light .hover\:bg-white\/\[0\.09\]:hover,
+html.light .hover\:bg-white\/\[0\.1\]:hover { background-color: rgba(15, 23, 42, 0.08); }
+html.light .surface { border-color: rgba(15, 23, 42, 0.1); background-color: rgba(255, 255, 255, 0.82); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.07); }
+html.light .metric-card { border-color: rgba(15, 23, 42, 0.09); background-color: rgba(255, 255, 255, 0.86); }
+html.light .command-hero { background: linear-gradient(115deg, #ffffff 0%, #f4f7fb 55%, #eef3f8 100%); border-color: rgba(15, 23, 42, 0.1); }
+html.light .command-hero:after { opacity: 0.7; background-image: linear-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(15, 23, 42, 0.06) 1px, transparent 1px); }
+html.light .command-hero .text-white { color: #172033; }
+html.light .secondary-button { border-color: rgba(15, 23, 42, 0.12); background-color: rgba(15, 23, 42, 0.04); color: #293548; }

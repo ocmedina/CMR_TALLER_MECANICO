@@ -4,7 +4,7 @@ Sistema Integral de Gestión de Taller Mecánico con Portal Público para Client
 
 ---
 
-## 👥 Guía para el Equipo de Desarrollo (8 Integrantes)
+## Guía para el Equipo de Desarrollo (8 Integrantes)
 
 Este repositorio está configurado bajo un esquema **Monorepo** con dos aplicaciones principales:
 - `/backend`: API REST en Node.js + TypeScript con Prisma ORM y PostgreSQL.
@@ -12,7 +12,51 @@ Este repositorio está configurado bajo un esquema **Monorepo** con dos aplicaci
 
 ---
 
-## 🚀 Requisitos Previos e Instalación
+## Últimas mejoras implementadas
+
+Actualización: **19 de octubre de 2026**
+
+### Gestión de turnos
+
+- Se incorporó el modelo `Appointment` en Prisma, relacionado con clientes y vehículos.
+- Se agregaron los estados de turno:
+  - `SCHEDULED`: programado.
+  - `CONFIRMED`: confirmado.
+  - `COMPLETED`: completado.
+  - `CANCELLED`: cancelado.
+  - `NO_SHOW`: el cliente no se presentó.
+- Los turnos incluyen fecha y hora, duración, motivo y notas.
+- Se agregaron índices para consultar rápidamente por fecha y estado.
+- Se incorporó la migración `20261019120000_add_appointments`.
+- El backend ahora expone endpoints autenticados para listar, crear y cambiar el estado de los turnos.
+- El frontend incluye la pantalla `/turnos` y su servicio HTTP correspondiente.
+
+### Mejoras del panel del taller
+
+- Se actualizaron el dashboard y la navegación principal del panel.
+- Se mejoraron las vistas de clientes, órdenes y escaneo de QR.
+- Se agregó la navegación hacia la agenda de turnos.
+- Se reforzó la experiencia responsive para utilizar el sistema desde dispositivos móviles.
+- Se actualizaron estilos globales, tipografías, colores, tarjetas y estados visuales.
+- Se incorporó el logo de la aplicación y se actualizó el manifiesto PWA.
+
+### Portal público y flujo QR
+
+- Se mejoró el portal público accesible mediante `/portal/[token]`.
+- Se actualizaron las vistas de seguimiento para mostrar la información del vehículo y sus órdenes de trabajo de forma más clara.
+- Se mantuvo el acceso público mediante token QR sin requerir inicio de sesión del cliente.
+
+### Backend y configuración
+
+- Se registró la ruta `/api/appointments` en la aplicación Express.
+- La carga de variables de entorno ahora busca el archivo `.env` en la carpeta del backend y en la raíz del proyecto.
+- Se mantiene la validación de variables de entorno mediante Zod antes de iniciar el servidor.
+- Se centralizó el manejo de errores de la API y se mantuvo el health check en `/health`.
+- El seed continúa creando usuarios, clientes, vehículos y órdenes de ejemplo para desarrollo.
+
+---
+
+## Requisitos Previos e Instalación
 
 ### 1. Requisitos
 - **Node.js**: v20 o superior
@@ -51,6 +95,12 @@ npm run prisma:migrate
 npm run prisma:seed
 ```
 
+Para aplicar las migraciones existentes en un entorno de producción:
+
+```bash
+npx prisma migrate deploy --schema backend/prisma/schema.prisma
+```
+
 ### 6. Ejecutar en Modo Desarrollo
 Puedes iniciar ambos simultáneamente desde la raíz o por separado:
 ```bash
@@ -64,7 +114,7 @@ npm run dev:frontend
 
 ---
 
-## 📂 Arquitectura de Directorios
+## Arquitectura de Directorios
 
 ### Backend (`/backend`)
 ```
@@ -84,6 +134,7 @@ backend/
 │   ├── modules/                # Módulos por dominio
 │   │   ├── auth/               # Registro, login y perfil
 │   │   ├── clients/            # CRUD de clientes
+│   │   ├── appointments/       # Gestión de turnos y estados
 │   │   ├── vehicles/           # CRUD autos, búsqueda por patente y QR
 │   │   ├── work-orders/        # Órdenes, estados Kanban y repuestos
 │   │   └── media/              # Fotos Cloudinary/S3
@@ -108,7 +159,8 @@ frontend/
 │   │   │   ├── dashboard/      # Métricas e ingresos
 │   │   │   ├── ordenes/        # Tablero Kanban y tabla de órdenes
 │   │   │   ├── clientes/       # Clientes y vehículos asociados
-│   │   │   └── escanear/       # Escáner de QR y alta express
+│   │   │   ├── escanear/       # Escáner de QR y alta express
+│   │   │   └── turnos/         # Agenda y estados de turnos
 │   │   ├── (public)/portal/[token]/ # Portal del cliente por QR (sin login)
 │   │   └── page.tsx            # Redirección inteligente
 │   ├── components/ (ui, forms, qr)
@@ -120,7 +172,7 @@ frontend/
 
 ---
 
-## 📡 Contratos de Endpoints de la API REST
+## Contratos de Endpoints de la API REST
 
 | Método | Ruta | Acceso | Descripción |
 |---|---|---|---|
@@ -134,11 +186,15 @@ frontend/
 | `PATCH` | `/api/work-orders/:id/status` | Taller (Token) | Actualiza estado (ej: 'EN_PROCESO', 'LISTO') |
 | `POST` | `/api/work-orders/:id/items` | Taller (Token) | Agrega repuestos o mano de obra a la orden |
 | `POST` | `/api/media/upload` | Taller (Token) | Sube y vincula fotos de evidencias |
+| `GET` | `/api/appointments` | Taller (Token) | Lista turnos, opcionalmente filtrados por fecha |
+| `POST` | `/api/appointments` | Taller (Token) | Crea un turno validando cliente y vehículo |
+| `PATCH` | `/api/appointments/:id/status` | Taller (Token) | Actualiza el estado de un turno |
 
 ---
 
-## 🔄 Flujo de Trabajo
+## Flujo de Trabajo
 1. **Recepción / Escaneo**: En `/escanear` se lee el QR del parabrisas o la patente. Si no existe, se abre el modal de alta express.
 2. **Creación de Orden**: Se cargan km, fallas reportadas y fotos iniciales.
 3. **Tablero Kanban**: En `/ordenes`, los mecánicos arrastran o cambian el estado y añaden repuestos/fotos.
-4. **Portal del Cliente**: El cliente consulta `/portal/[token]` en tiempo real sin requerir contraseña.
+4. **Agenda**: En `/turnos` se crean turnos asociados a un cliente y vehículo, y se actualiza su estado.
+5. **Portal del Cliente**: El cliente consulta `/portal/[token]` en tiempo real sin requerir contraseña.

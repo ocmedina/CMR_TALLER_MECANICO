@@ -12,6 +12,7 @@ import {
   AlertCircle,
   Camera,
   ArrowRight,
+  X,
 } from 'lucide-react';
 import { vehiclesService } from '../../../services/vehicles.service';
 import { clientsService } from '../../../services/clients.service';
@@ -122,11 +123,11 @@ export default function EscanearPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-          <QrCode className="w-8 h-8 text-indigo-500" /> Recepción de Vehículo & Escáner
+          <QrCode className="w-8 h-8 text-amber-300" /> Recepción de Vehículo & Escáner
         </h1>
         <p className="text-sm text-slate-400 mt-1">
           Escanea el código QR del parabrisas o escribe la patente para buscar o dar de alta al auto
@@ -134,7 +135,7 @@ export default function EscanearPage() {
       </div>
 
       {/* Buscador / Escáner Input */}
-      <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl backdrop-blur">
+      <div className="surface rounded-2xl p-6 shadow-xl">
         <form onSubmit={handleSearchPlate} className="space-y-4">
           <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
             Patente / Matrícula o Código Token
@@ -147,14 +148,14 @@ export default function EscanearPage() {
                 value={plateQuery}
                 onChange={(e) => setPlateQuery(e.target.value.toUpperCase())}
                 placeholder="Ej: AF123JK o AD789PO"
-                className="w-full pl-11 pr-4 py-3 bg-slate-950 border border-slate-700 rounded-xl font-mono text-base font-bold text-white tracking-widest placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 uppercase"
+                className="w-full pl-11 pr-4 py-3 bg-slate-950/80 border border-white/[0.1] rounded-xl font-mono text-base font-bold text-white tracking-widest placeholder:text-slate-600 focus:outline-none focus:border-amber-400 uppercase"
               />
             </div>
 
             <button
               type="submit"
               disabled={searching}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm rounded-xl transition-all shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2 cursor-pointer"
+              className="primary-button px-6 py-3 cursor-pointer"
             >
               <Search className="w-4 h-4" />
               {searching ? 'Buscando...' : 'Buscar Auto'}
@@ -171,7 +172,7 @@ export default function EscanearPage() {
 
       {/* Caso: Auto No Encontrado -> Sugerir Alta Express */}
       {notFound && (
-        <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-slate-200 animate-in fade-in">
+        <div className="rounded-2xl border border-amber-400/20 bg-amber-400/[0.08] p-6 text-slate-200 animate-in fade-in">
           <div className="flex items-start gap-4">
             <div className="p-3 bg-amber-500/20 text-amber-400 rounded-xl">
               <Car className="w-6 h-6" />
@@ -278,9 +279,9 @@ export default function EscanearPage() {
               </h3>
               <button
                 onClick={() => setShowExpressModal(false)}
-                className="text-slate-400 hover:text-white text-sm"
+                className="text-slate-400 hover:text-white"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
