@@ -5,7 +5,7 @@ import { env } from '../config/env';
 export interface AuthenticatedUser {
   id: string;
   email: string;
-  role: 'ADMIN' | 'MECHANIC';
+  role: 'ADMIN' | 'MECHANIC' | 'RECEPTIONIST' | 'WORKSHOP_MANAGER' | 'CLIENT';
 }
 
 declare global {

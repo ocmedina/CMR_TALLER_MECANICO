@@ -43,10 +43,19 @@ export class AppointmentsController {
   async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { status } = updateStatusSchema.parse(req.body);
-      const appointment = await appointmentsService.updateStatus(req.params.id, status);
+      const appointment = await appointmentsService.updateStatus(req.params.id, status, req.user?.id);
       res.status(200).json({ success: true, message: 'Estado del turno actualizado', data: appointment });
     } catch (error) {
       next(error);
     }
+  }
+
+  async createForClient(req: Request, res: Response, next: NextFunction): Promise<void> {
+      try {
+        if (!req.user) { res.status(401).json({ success: false, message: 'No autenticado' }); return; }
+        const data = createAppointmentSchema.omit({ clientId: true }).parse(req.body);
+        const appointment = await appointmentsService.createForClient(req.user.id, data);
+        res.status(201).json({ success: true, message: 'Solicitud de turno enviada', data: appointment });
+      } catch (error) { next(error); }
   }
 }

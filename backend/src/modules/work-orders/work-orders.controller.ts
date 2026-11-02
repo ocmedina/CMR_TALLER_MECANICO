@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { OrderStatus, ItemType } from '@prisma/client';
+import { ApprovalStatus, OrderStatus, ItemType } from '@prisma/client';
 import { WorkOrdersService } from './work-orders.service';
 
 const workOrdersService = new WorkOrdersService();
@@ -22,6 +22,10 @@ const addItemSchema = z.object({
   description: z.string().min(2, 'La descripción del item es requerida'),
   quantity: z.number().int().positive('La cantidad debe ser positiva').default(1),
   unitPrice: z.number().nonnegative('El precio unitario debe ser mayor o igual a 0'),
+});
+const budgetSchema = z.object({
+  status: z.nativeEnum(ApprovalStatus),
+  reason: z.string().max(500).optional(),
 });
 
 export class WorkOrdersController {
@@ -67,7 +71,7 @@ export class WorkOrdersController {
   async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const validated = updateStatusSchema.parse(req.body);
-      const updatedOrder = await workOrdersService.updateStatus(req.params.id, validated.status);
+      const updatedOrder = await workOrdersService.updateStatus(req.params.id, validated.status, req.user?.id);
       res.status(200).json({
         success: true,
         message: `Estado de orden actualizado a ${validated.status}`,
@@ -90,5 +94,20 @@ export class WorkOrdersController {
     } catch (error) {
       next(error);
     }
+  }
+
+  async getMine(req: Request, res: Response, next: NextFunction): Promise<void> {
+      try {
+        if (!req.user) { res.status(401).json({ success: false, message: 'No autenticado' }); return; }
+        res.json({ success: true, data: await workOrdersService.getForClient(req.user.id) });
+      } catch (error) { next(error); }
+  }
+
+  async approveBudget(req: Request, res: Response, next: NextFunction): Promise<void> {
+      try {
+        if (!req.user) { res.status(401).json({ success: false, message: 'No autenticado' }); return; }
+        const data = budgetSchema.parse(req.body);
+        res.json({ success: true, data: await workOrdersService.approveBudget(req.user.id, req.params.id, data.status, data.reason) });
+      } catch (error) { next(error); }
   }
 }

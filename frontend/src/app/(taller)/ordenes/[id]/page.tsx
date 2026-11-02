@@ -218,6 +218,15 @@ export default function OrdenDetallePage() {
           <p className="text-xs text-slate-400 mt-2">
             {order.items.length} items agregados a esta orden
           </p>
+          <span className={`mt-3 inline-block rounded-full px-2.5 py-1 text-[10px] font-bold ${
+            order.budgetStatus === 'APPROVED'
+              ? 'bg-emerald-500/15 text-emerald-300'
+              : order.budgetStatus === 'REJECTED'
+                ? 'bg-rose-500/15 text-rose-300'
+                : 'bg-amber-500/15 text-amber-300'
+          }`}>
+            Presupuesto: {order.budgetStatus === 'APPROVED' ? 'Aprobado' : order.budgetStatus === 'REJECTED' ? 'Rechazado' : 'Pendiente'}
+          </span>
         </div>
       </div>
 

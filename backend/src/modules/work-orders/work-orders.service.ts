@@ -1,5 +1,7 @@
-import { OrderStatus, ItemType } from '@prisma/client';
+import { ApprovalStatus, OrderStatus, ItemType } from '@prisma/client';
 import { prisma } from '../../config/database';
+import { audit } from '../../utils/audit.helper';
+import { notifyByEmail } from '../../utils/notification.helper';
 
 export class WorkOrdersService {
   async getAll(status?: OrderStatus) {
@@ -81,19 +83,22 @@ export class WorkOrdersService {
     });
   }
 
-  async updateStatus(id: string, status: OrderStatus) {
+  async updateStatus(id: string, status: OrderStatus, userId?: string) {
     const existing = await prisma.workOrder.findUnique({ where: { id } });
     if (!existing) {
       throw new Error('Orden de trabajo no encontrada');
     }
 
-    return prisma.workOrder.update({
+    const updated = await prisma.workOrder.update({
       where: { id },
       data: { status },
       include: {
-        vehicle: true,
+        vehicle: { include: { client: true } },
       },
     });
+    await audit('STATUS_UPDATED', 'WorkOrder', id, userId, { from: existing.status, to: status }, id);
+    await notifyByEmail(updated.vehicle.client?.email, `Actualización de tu orden #${updated.id}`, `El estado de tu vehículo cambió a ${status}.`);
+    return updated;
   }
 
   async addItem(
@@ -122,5 +127,33 @@ export class WorkOrdersService {
         subtotal,
       },
     });
+  }
+
+  async getForClient(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { clientId: true } });
+    if (!user?.clientId) throw new Error('La cuenta no está vinculada a un cliente');
+    return prisma.workOrder.findMany({
+      where: { vehicle: { clientId: user.clientId } },
+      include: { vehicle: true, items: true, media: true, mechanic: { select: { name: true } } },
+      orderBy: { updatedAt: 'desc' },
+    });
+  }
+
+  async approveBudget(userId: string, orderId: string, status: ApprovalStatus, reason?: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { clientId: true } });
+    if (!user?.clientId) throw new Error('La cuenta no está vinculada a un cliente');
+    const order = await prisma.workOrder.findFirst({ where: { id: orderId, vehicle: { clientId: user.clientId } } });
+    if (!order) throw new Error('Orden de trabajo no encontrada');
+    const updated = await prisma.workOrder.update({
+      where: { id: orderId },
+      data: {
+        budgetStatus: status,
+        budgetApprovedAt: status === ApprovalStatus.APPROVED ? new Date() : null,
+        budgetRejectedReason: status === ApprovalStatus.REJECTED ? reason : null,
+      },
+      include: { vehicle: true, items: true },
+    });
+    await audit('BUDGET_DECIDED', 'WorkOrder', orderId, userId, { status, reason }, orderId);
+    return updated;
   }
 }

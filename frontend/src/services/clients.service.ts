@@ -14,7 +14,7 @@ export const clientsService = {
     return res.data.data;
   },
 
-  async create(data: { name: string; phone: string; email?: string; documentId?: string; address?: string }): Promise<Client> {
+  async create(data: { name: string; phone: string; email?: string; documentId?: string; address?: string; createAccount?: boolean }): Promise<Client & { inviteUrl?: string }> {
     const res = await api.post('/clients', data);
     return res.data.data;
   },

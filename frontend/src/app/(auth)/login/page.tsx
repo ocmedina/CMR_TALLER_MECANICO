@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
+import { Lock, Mail, AlertCircle, ArrowRight, Car, Wrench } from 'lucide-react';
 import { authService } from '../../../services/auth.service';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('password123');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [audience, setAudience] = useState<'CLIENT' | 'STAFF'>('STAFF');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,8 +20,8 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await authService.login(email, password);
-      router.push('/dashboard');
+      const result = await authService.login(email, password, audience);
+      router.push(result.user.role === 'CLIENT' ? '/cuenta' : '/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error al iniciar sesión. Verifica tus credenciales.');
     } finally {
@@ -32,8 +34,25 @@ export default function LoginPage() {
       <div className="w-full max-w-md surface p-8 rounded-3xl">
         <div className="flex flex-col items-center text-center mb-8">
           <img src="/Logo.png" alt="TallerPro Control Operativo" className="mb-5 h-auto w-64 object-contain" />
-          <h1 className="text-2xl font-black tracking-tight text-white">Acceso al Panel del Taller</h1>
-          <p className="text-sm text-slate-400 mt-1">Ingresa con tus credenciales de administrador o mecánico</p>
+          <h1 className="text-2xl font-black tracking-tight text-white">Ingresar a TallerPro</h1>
+          <p className="text-sm text-slate-400 mt-1">Seleccioná el tipo de acceso para continuar</p>
+        </div>
+
+        <div className="mb-6 grid grid-cols-2 gap-2 rounded-xl bg-slate-950/70 p-1">
+          <button
+            type="button"
+            onClick={() => { setAudience('STAFF'); setError(null); }}
+            className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-xs font-bold transition-all ${audience === 'STAFF' ? 'bg-amber-400 text-slate-950' : 'text-slate-400 hover:text-white'}`}
+          >
+            <Wrench className="h-4 w-4" /> Personal del taller
+          </button>
+          <button
+            type="button"
+            onClick={() => { setAudience('CLIENT'); setError(null); }}
+            className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-xs font-bold transition-all ${audience === 'CLIENT' ? 'bg-amber-400 text-slate-950' : 'text-slate-400 hover:text-white'}`}
+          >
+            <Car className="h-4 w-4" /> Soy cliente
+          </button>
         </div>
 
         {error && (
@@ -53,7 +72,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@taller.com"
+                placeholder={audience === 'CLIENT' ? 'cliente@email.com' : 'admin@taller.com'}
                 className="w-full pl-11 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               />
             </div>
@@ -85,6 +104,7 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+        <Link href="/recuperar-contrasena" className="mt-4 block text-center text-xs text-amber-300 hover:text-amber-200">¿Olvidaste tu contraseña?</Link>
 
         <div className="mt-8 pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
           <p className="font-medium text-slate-400 mb-1">Credenciales por defecto del Seed:</p>

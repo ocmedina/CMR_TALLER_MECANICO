@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { VehiclesController } from './vehicles.controller';
 import { authenticateJWT } from '../../middlewares/auth.middleware';
+import { requireRole } from '../../middlewares/role.middleware';
 
 const router = Router();
 const vehiclesController = new VehiclesController();
@@ -9,7 +10,7 @@ const vehiclesController = new VehiclesController();
 router.get('/qr/:token', (req, res, next) => vehiclesController.getByQrToken(req, res, next));
 
 // Rutas protegidas para el personal del taller
-router.use(authenticateJWT);
+router.use(authenticateJWT, requireRole(['ADMIN', 'MECHANIC', 'RECEPTIONIST', 'WORKSHOP_MANAGER']));
 
 // GET /api/vehicles/by-plate/:plate
 router.get('/by-plate/:plate', (req, res, next) => vehiclesController.getByPlate(req, res, next));

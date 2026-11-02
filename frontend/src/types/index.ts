@@ -1,4 +1,5 @@
-export type Role = 'ADMIN' | 'MECHANIC';
+export type Role = 'ADMIN' | 'MECHANIC' | 'RECEPTIONIST' | 'WORKSHOP_MANAGER' | 'CLIENT';
+export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export type OrderStatus =
   | 'PENDING'
@@ -17,6 +18,8 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+  active?: boolean;
+  clientId?: string;
 }
 
 export interface Client {
@@ -75,6 +78,9 @@ export interface WorkOrder {
   media: WorkOrderMedia[];
   createdAt: string;
   updatedAt: string;
+  budgetStatus?: ApprovalStatus;
+  budgetApprovedAt?: string;
+  budgetRejectedReason?: string;
 }
 
 export interface Appointment {

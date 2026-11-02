@@ -10,6 +10,7 @@ const createClientSchema = z.object({
   email: z.string().email('Email inválido').optional().or(z.literal('')),
   documentId: z.string().optional().or(z.literal('')),
   address: z.string().optional().or(z.literal('')),
+  createAccount: z.boolean().optional(),
 });
 
 export class ClientsController {
@@ -47,6 +48,7 @@ export class ClientsController {
         email: validatedData.email || undefined,
         documentId: validatedData.documentId || undefined,
         address: validatedData.address || undefined,
+        createAccount: validatedData.createAccount,
       });
 
       res.status(201).json({

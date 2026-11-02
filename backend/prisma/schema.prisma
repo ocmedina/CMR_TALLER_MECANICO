@@ -13,6 +13,15 @@ datasource db {
 enum Role {
   ADMIN
   MECHANIC
+  RECEPTIONIST
+  WORKSHOP_MANAGER
+  CLIENT
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum OrderStatus {
@@ -49,6 +58,11 @@ model User {
   password  String
   name      String
   role      Role     @default(MECHANIC)
+  active    Boolean  @default(true)
+  clientId  String?  @unique
+  client    Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  passwordResetTokens PasswordResetToken[]
+  auditEntries AuditLog[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -69,6 +83,8 @@ model Client {
 
   vehicles   Vehicle[]
   appointments Appointment[]
+  user         User?
+  feedback     Feedback[]
 
   @@map("clients")
 }
@@ -122,6 +138,9 @@ model WorkOrder {
   currentKm   Int
   description String      // Fallas reportadas / motivo de ingreso
   notes       String?     // Notas internas de mecánicos
+  budgetStatus ApprovalStatus @default(PENDING)
+  budgetApprovedAt DateTime?
+  budgetRejectedReason String?
 
   vehicleId   String
   vehicle     Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
@@ -131,11 +150,59 @@ model WorkOrder {
 
   items       WorkOrderItem[]
   media       WorkOrderMedia[]
+  auditEntries AuditLog[]
+  feedback Feedback?
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
   @@map("work_orders")
+}
+
+model Feedback {
+  id         String @id @default(uuid())
+  rating     Int
+  comment    String?
+  workOrderId String @unique
+  workOrder  WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  clientId   String
+  client     Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([clientId])
+  @@map("feedback")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  action     String
+  entity     String
+  entityId   String?
+  metadata   Json?
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  workOrderId String?
+  workOrder  WorkOrder? @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([entity, entityId])
+  @@map("audit_logs")
 }
 
 model WorkOrderItem {

@@ -35,7 +35,12 @@ export default function TallerLayout({
       router.push('/login');
       return;
     }
-    setUser(authService.getCurrentUser());
+    const currentUser = authService.getCurrentUser();
+    if (currentUser?.role === 'CLIENT') {
+      router.push('/cuenta');
+      return;
+    }
+    setUser(currentUser);
     setLightMode(localStorage.getItem('tallerpro-theme') === 'light');
   }, [router]);
 
@@ -51,6 +56,7 @@ export default function TallerLayout({
     { label: 'Agenda de Turnos', href: '/turnos', icon: CalendarDays },
     { label: 'Recepción & Escáner', href: '/escanear', icon: QrCode },
     { label: 'Clientes & Autos', href: '/clientes', icon: Users },
+    ...(user?.role === 'ADMIN' ? [{ label: 'Usuarios', href: '/usuarios', icon: UserIcon }] : []),
   ];
 
   return (

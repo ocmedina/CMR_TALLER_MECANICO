@@ -9,6 +9,8 @@ import vehiclesRoutes from './modules/vehicles/vehicles.routes';
 import workOrdersRoutes from './modules/work-orders/work-orders.routes';
 import mediaRoutes from './modules/media/media.routes';
 import appointmentsRoutes from './modules/appointments/appointments.routes';
+import usersRoutes from './modules/users/users.routes';
+import feedbackRoutes from './modules/feedback/feedback.routes';
 
 export const createApp = (): Express => {
   const app = express();
@@ -35,6 +37,8 @@ export const createApp = (): Express => {
 
   // Rutas de la API
   app.use('/api/auth', authRoutes);
+  app.use('/api/users', usersRoutes);
+  app.use('/api/feedback', feedbackRoutes);
   app.use('/api/clients', clientsRoutes);
   app.use('/api/vehicles', vehiclesRoutes);
   app.use('/api/work-orders', workOrdersRoutes);

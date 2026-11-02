@@ -19,6 +19,9 @@ export default function ClientesPage() {
   const [documentId, setDocumentId] = useState('');
   const [address, setAddress] = useState('');
   const [saving, setSaving] = useState(false);
+  const [createAccount, setCreateAccount] = useState(true);
+  const [formError, setFormError] = useState('');
+  const [inviteUrl, setInviteUrl] = useState('');
 
   const fetchClients = async (query?: string) => {
     try {
@@ -43,14 +46,17 @@ export default function ClientesPage() {
   const handleCreateClient = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setFormError('');
     try {
-      await clientsService.create({
+      const created = await clientsService.create({
         name,
         phone,
         email: email || undefined,
         documentId: documentId || undefined,
         address: address || undefined,
+        createAccount,
       });
+      setInviteUrl(created.inviteUrl || '');
       setShowModal(false);
       setName('');
       setPhone('');
@@ -58,8 +64,8 @@ export default function ClientesPage() {
       setDocumentId('');
       setAddress('');
       fetchClients();
-    } catch (err) {
-      console.error('Error al guardar cliente:', err);
+    } catch (err: any) {
+      setFormError(err.response?.data?.message || 'No se pudo guardar el cliente');
     } finally {
       setSaving(false);
     }
@@ -196,6 +202,8 @@ export default function ClientesPage() {
             </div>
 
             <form onSubmit={handleCreateClient} className="space-y-3">
+              {formError && <p className="rounded-lg bg-rose-500/10 p-3 text-xs text-rose-300">{formError}</p>}
+              {inviteUrl && <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-200"><p className="font-bold">Cliente guardado. Compartí este enlace de activación:</p><div className="mt-2 break-all rounded-lg bg-black/20 p-2 text-xs">{inviteUrl}</div><button onClick={() => navigator.clipboard.writeText(inviteUrl)} className="mt-3 rounded-lg bg-emerald-500/20 px-3 py-1.5 text-xs font-bold">Copiar enlace para WhatsApp</button></div>}
               <div>
                 <label className="block text-xs text-slate-400 mb-1">Nombre Completo</label>
                 <input
@@ -206,6 +214,10 @@ export default function ClientesPage() {
                   className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white"
                 />
               </div>
+              <label className="flex items-center gap-2 text-xs text-slate-300">
+                <input type="checkbox" checked={createAccount} onChange={(e) => setCreateAccount(e.target.checked)} />
+                Crear acceso al portal y enviar invitación
+              </label>
 
               <div>
                 <label className="block text-xs text-slate-400 mb-1">Teléfono / WhatsApp</label>

@@ -1,12 +1,16 @@
 import { Router } from 'express';
 import { WorkOrdersController } from './work-orders.controller';
 import { authenticateJWT } from '../../middlewares/auth.middleware';
+import { requireRole } from '../../middlewares/role.middleware';
 
 const router = Router();
 const workOrdersController = new WorkOrdersController();
 
+router.get('/mine', authenticateJWT, requireRole(['CLIENT']), (req, res, next) => workOrdersController.getMine(req, res, next));
+router.patch('/:id/budget', authenticateJWT, requireRole(['CLIENT']), (req, res, next) => workOrdersController.approveBudget(req, res, next));
+
 // Todas las rutas de órdenes de trabajo requieren token de personal del taller
-router.use(authenticateJWT);
+router.use(authenticateJWT, requireRole(['ADMIN', 'MECHANIC', 'RECEPTIONIST', 'WORKSHOP_MANAGER']));
 
 // GET /api/work-orders - Lista todas las órdenes (soporta ?status=)
 router.get('/', (req, res, next) => workOrdersController.getAll(req, res, next));

@@ -7,8 +7,8 @@ export interface LoginResponse {
 }
 
 export const authService = {
-  async login(email: string, passwordPlain: string): Promise<LoginResponse> {
-    const res = await api.post('/auth/login', { email, password: passwordPlain });
+  async login(email: string, passwordPlain: string, audience: 'CLIENT' | 'STAFF' = 'STAFF'): Promise<LoginResponse> {
+    const res = await api.post('/auth/login', { email, password: passwordPlain, audience });
     const data = res.data.data;
     if (typeof window !== 'undefined') {
       localStorage.setItem('crm_token', data.token);
